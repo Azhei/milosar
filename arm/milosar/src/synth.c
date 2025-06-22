@@ -616,7 +616,7 @@ time_t start_experiment(void* gpio, void* tcu, Configuration *config)
 
 
 
-void config_experiment(Configuration *config, Synthesizer *tx_synth, Synthesizer *lo_synth, Gps *gps)
+void config_experiment(Configuration *config, Synthesizer *tx_synth, Synthesizer *lo_synth)
 {
 	//calculate the number of PRF pulses to generate 
 	config->n_pulses = config->n_seconds*config->prf;

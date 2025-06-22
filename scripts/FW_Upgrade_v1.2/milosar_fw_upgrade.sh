@@ -1,7 +1,8 @@
 #!/bin/bash
-RP_HOST=root@10.42.0.185
+RP_HOST=root@rp-f0b92e.local
 WORKING_DIR=/opt/redpitaya/milosar
 TRIGGER_DIR=/opt/redpitaya/milosar_trigger
+FIRMWARE_DIR="/lib/firmware/milosar"
 # Specify backup dir according to date and time
 TODAY=$(date +_%Y%m%d_%H%M%S)
 BACKUP_DIR=/opt/redpitaya/milosar_BAK$TODAY
@@ -10,7 +11,7 @@ VERSION=1.2.0
 
 clear
 
-echo "Firmware upgrade for Purdue MiloSAR"
+echo "Firmware upgrade for MiloSAR"
 echo "IP: $RP_HOST"
 echo ""
 
@@ -29,8 +30,10 @@ ssh -t $RP_HOST "if [ -d $TRIGGER_DIR ]; then mkdir $TRIGGER_BACKUP_DIR; cp -r $
 echo ""
 
 echo "---> Upgrading firmware"
+ssh $RP_HOST "mkdir -p $FIRMWARE_DIR"
+scp system_wrapper.bit.bin $RP_HOST:$FIRMWARE_DIR
 scp setup.ini $RP_HOST:$WORKING_DIR
-scp system_wrapper.bit $RP_HOST:$WORKING_DIR
+# scp system_wrapper.bit $RP_HOST:$WORKING_DIR
 scp milosar $RP_HOST:$WORKING_DIR
 scp -r ramps $RP_HOST:$WORKING_DIR
 scp -r template $RP_HOST:$WORKING_DIR
@@ -38,7 +41,7 @@ echo ""
 # trigger app
 echo "---> Upgrading trigger app"
 scp milosar_trigger $RP_HOST:$TRIGGER_DIR
-scp system_wrapper.bit $RP_HOST:$TRIGGER_DIR
+scp system_wrapper.bit.bin $RP_HOST:$TRIGGER_DIR
 echo ""
 
 echo "---> Upgraded to MiloSAR v$VERSION" 

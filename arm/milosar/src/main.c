@@ -15,7 +15,7 @@
 #include "utils.h"
 #include "constants.h"
 #include "synth.h"
-#include "gps.h"
+// #include "gps.h"
 #include "led.h"
 #include "trigger.h"
 #include "version.h"
@@ -33,7 +33,7 @@ void waitFor (unsigned int secs);
 // Global variables
 //-----------------------------------------------------------------------------------------------
 Channel *A, *B;
-Gps *gps;
+// Gps *gps;
 Synthesizer tx_synth, lo_synth;
 Configuration config;
 Led *power_led;
@@ -58,7 +58,7 @@ void exit_handler(int sig)
 	ASSERT(destroy_map(SREG, &reg_tcu), "Failed to deallocate reg_tcu memory.");
 	ASSERT(destroy_map(SREG, &reg_channel_b_phase_inc), "Failed to deallocate reg_channel_b_phase_inc memory.");
 
-	if (config.is_gpsd) dinit_gps(gps);
+	// if (config.is_gpsd) dinit_gps(gps);
 
   if (config.is_status_leds) dinit_leds();
 
@@ -87,9 +87,9 @@ int main(int argc, char **argv)
 	config.storage_dir = SD_STORAGE_DIR;
 	config.is_debug = false;
 	config.is_data_transfer = false;
-	config.is_gpsd = false;
+	// config.is_gpsd = false;
   config.capture_delay = 0;
-	gps = malloc(sizeof(*gps));
+	// gps = malloc(sizeof(*gps));
   
   // status LEDs
   config.is_status_leds = false;
@@ -138,11 +138,11 @@ int main(int argc, char **argv)
   //-----------------------------------------------------------------------------------------------
 
     //launch the gps worker thread
-    if (config.is_gpsd)
-    {
-      gps->state = Idle;
-      pthread_create(&gps->thread, NULL, *gps_worker, (void *)gps);
-    }
+    // if (config.is_gpsd)
+    // {
+    //   gps->state = Idle;
+    //   pthread_create(&gps->thread, NULL, *gps_worker, (void *)gps);
+    // }
 
     //parse synth ramp parameters from .ini files
     parse_ramp_file(&tx_synth);
@@ -157,7 +157,7 @@ int main(int argc, char **argv)
     load_registers(SYNTH_REG_TEMP_DIR, &lo_synth);
 
     //wait here for gps fix
-    if (config.is_gpsd) wait_for_fix(gps);
+    // if (config.is_gpsd) wait_for_fix(gps);
 
     // Indicate that the system is armed and ready for trigger
     if (config.is_status_leds)
@@ -176,7 +176,7 @@ int main(int argc, char **argv)
     }
 
     //get user input for final experiment settings
-    config_experiment(&config, &tx_synth, &lo_synth, gps);
+    config_experiment(&config, &tx_synth, &lo_synth);
 
     //set all gpio pins low
     set_reg(reg_gpio, LOW);
@@ -199,7 +199,7 @@ int main(int argc, char **argv)
     set_ramping(reg_gpio, &tx_synth, &lo_synth, true);
 
     //enable gps data recording
-    if (config.is_gpsd) gps->state = Active;
+    // if (config.is_gpsd) gps->state = Active;
 
     //enable recording and trigger synths in parallel
     time_t tcu_trigger_time = start_experiment(reg_gpio, reg_tcu, &config);
@@ -214,12 +214,12 @@ int main(int argc, char **argv)
     set_ramping(reg_gpio, &tx_synth, &lo_synth, false);
 
     //disable gps data recording
-    if (config.is_gpsd)
-    {
-      gps->experiment_dir = config.experiment_dir;
-      gps->state= Shutdown;	
-      pthread_join(gps->thread, NULL);
-    }
+    // if (config.is_gpsd)
+    // {
+    //   gps->experiment_dir = config.experiment_dir;
+    //   gps->state= Shutdown;	
+    //   pthread_join(gps->thread, NULL);
+    // }
 
     // Update the summary file with the TCU trigger time
     FILE* f;
@@ -373,9 +373,9 @@ int parse_setup_file(void* pointer, const char* section, const char* attribute, 
 	if (MATCH("timing", "channel_a_phase_increment")) config.channel_a_phase_increment = atoi(value);
 	if (MATCH("timing", "channel_b_phase_increment")) config.channel_b_phase_increment = atoi(value);
 
-	if (MATCH("gpsd", "enabled")) config.is_gpsd = atoi(value);
-	if (MATCH("gpsd", "min_mode")) gps->min_mode = atoi(value);
-	if (MATCH("gpsd", "min_sats")) gps->min_sats = atoi(value);
+	// if (MATCH("gpsd", "enabled")) config.is_gpsd = atoi(value);
+	// if (MATCH("gpsd", "min_mode")) gps->min_mode = atoi(value);
+	// if (MATCH("gpsd", "min_sats")) gps->min_sats = atoi(value);
 
 	if (MATCH("sampling", "decimation_factor")) config.decimation_factor = atoi(value);
 	if (MATCH("sampling", "presum_factor")) config.presum_factor = atoi(value);
@@ -410,15 +410,18 @@ void init_red_pitaya(void)
 	system("df -T -h /media/storage/");
 	printf("\n");
 
-	if (config.is_debug)
-	{
-		cprint("[**] ", BRIGHT, CYAN);
-		printf("Loading Bitstream:\n%s\n", config.bitstream);
-	}
+	// if (config.is_debug)
+	// {
+	// 	cprint("[**] ", BRIGHT, CYAN);
+	// 	printf("Loading Bitstream:\n%s\n", config.bitstream);
+	// }
+
+	// clear bitstream
+	system("fpgautil -R\n");
 
 	// load bitstream
 	char cmd[100];
-	sprintf(cmd, "cat %s > /dev/xdevcfg\n", config.bitstream);
+	sprintf(cmd, "fpgautil -b %s\n", config.bitstream);
 	system(cmd);
 
 	//increase program priority 

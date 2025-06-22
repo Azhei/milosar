@@ -1,5 +1,5 @@
-RP_HOST=root@10.42.0.185
-DEST_DIR=/opt/redpitaya/rpc
+RP_HOST=root@rp-f0b92e.local
+DEST_DIR=/opt/redpitaya/milosar
 
 # name of generated binary file
 BIN = milosar
@@ -7,8 +7,8 @@ BIN = milosar
 # must use gnueabihf
 CC = gcc
 
-# libraries 
-LIBS = -lm -lpthread -lgps
+# libraries
+LIBS = -lm -lpthread
 
 # header and objects directory relative to Makefile
 IDIR = ./src
@@ -18,11 +18,11 @@ ODIR = ./src
 CFLAGS = -std=gnu99 -Wall -Werror -L -I$(IDIR)
 
 # h files used go here
-_DEPS = reg.h utils.h synth.h colour.h ini.h binary.h constants.h gps.h led.h
+_DEPS = reg.h utils.h synth.h colour.h ini.h binary.h constants.h led.h
 DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
 
 # object files used go here (with .o extension)
-_OBJ =  reg.o utils.o synth.o colour.o ini.o binary.o main.o gps.o led.o
+_OBJ =  reg.o utils.o synth.o colour.o ini.o binary.o main.o led.o
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
 $(ODIR)/%.o: %.c $(DEPS)
@@ -35,7 +35,7 @@ $(BIN): $(OBJ)
 
 clean:
 	rm -f $(ODIR)/*.o
-	
+
 copy:
 	scp $(BIN) $(RP_HOST):$(DEST_DIR)
-	
+

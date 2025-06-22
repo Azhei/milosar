@@ -1,13 +1,13 @@
 @echo off
 setlocal
-SET RP_HOST=root@10.42.0.185
+SET RP_HOST=root@rp-f0b92e.local
 SET WORKING_DIR=/opt/redpitaya/milosar
 SET TRIGGER_DIR=/opt/redpitaya/milosar_trigger
 call :GetUnixTime UNIX_TIME
 ECHO.
 
 ECHO "Configuring Purdue MiloSAR"
-ECHO "10.42.0.185"
+ECHO "rp-f0b92e.local"
 ECHO.
 
 ECHO "---> Setting the date and time"

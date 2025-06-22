@@ -16,7 +16,7 @@
 #include "utils.h"
 #include "colour.h"
 #include "reg.h"
-#include "gps.h"
+// #include "gps.h"
 #include "led.h"
 
 #define MAX_RAMPS 				8
@@ -81,7 +81,7 @@ void set_register_parallel(void* gpio, Synthesizer *tx_synth, Synthesizer *lo_sy
 //void start_experiment(void* gpio, void* tcu, Configuration *config);
 // time_t start_experiment(void* gpio, void* tcu, Configuration *config);
 time_t start_experiment(void* gpio, void* tcu, Configuration *config);
-void config_experiment(Configuration *config, Synthesizer *tx_synth, Synthesizer *lo_synth, Gps *gps);
+void config_experiment(Configuration *config, Synthesizer *tx_synth, Synthesizer *lo_synth);
 void decimal_to_binary(uint64_t decimalValue, int* binaryValue);
 void print_binary(int* binaryValue, int paddedSize);
 

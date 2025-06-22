@@ -18,7 +18,7 @@
 #include "version.h"
 
 //-----------------------------------------------------------------------------------------------
-// Local functiond definitions
+// Local function definitions
 //-----------------------------------------------------------------------------------------------
 void splash(void);
 void init_rp_trigger(Trigger *trigger);
@@ -58,11 +58,14 @@ void exit_handler(int sig)
 void load_bitstream(void)
 {
   cprint("[**] ", BRIGHT, CYAN);
-  printf("Loading Bitstream: '%s'\n", "/opt/redpitaya/milosar_trigger/system_wrapper.bit");
-  
+  printf("Loading Bitstream: system_wrapper.bit.bin");
+
+  // clear bitstream
+  system("fpgautil -R");
+
   // load bitstream
 	char cmd[100];
-	sprintf(cmd, "cat %s > /dev/xdevcfg\n", "/opt/redpitaya/milosar_trigger/system_wrapper.bit");
+	sprintf(cmd, "fpgautil -b system_wrapper.bit.bin");
 	system(cmd);
 }
 
