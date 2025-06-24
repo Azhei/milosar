@@ -32,8 +32,8 @@ echo ""
 echo "---> Upgrading firmware"
 ssh $RP_HOST "mkdir -p $FIRMWARE_DIR"
 scp system_wrapper.bit.bin $RP_HOST:$FIRMWARE_DIR
+scp system_wrapper.bit.bin $RP_HOST:$WORKING_DIR
 scp setup.ini $RP_HOST:$WORKING_DIR
-# scp system_wrapper.bit $RP_HOST:$WORKING_DIR
 scp milosar $RP_HOST:$WORKING_DIR
 scp -r ramps $RP_HOST:$WORKING_DIR
 scp -r template $RP_HOST:$WORKING_DIR
